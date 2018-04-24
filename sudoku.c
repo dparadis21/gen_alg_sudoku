@@ -3,7 +3,7 @@
 #include <time.h>
 
 #define POPULATION 100
-#define NINES 0
+#define NINES 1
 #define MUTATION_P 0.01
 
 void print_board(unsigned char c[81]);
@@ -30,7 +30,6 @@ unsigned char fixed_boxes[81] =
  4, 7, 10, 1, 5, 3, 10, 10, 10};
 
 int main() {
-
 	unsigned char parents[POPULATION][81]; // POPULATION number of sudoku boards
 	unsigned char children[POPULATION][81];
 	unsigned char parent_index[POPULATION];
@@ -54,6 +53,8 @@ int main() {
 		for (j = 0; j < POPULATION; j++) {
 			if (fixed_boxes[i] == 9)
 				parents[j][i] = rand() % 9;
+			else
+				parents[j][i] = fixed_boxes[i];
 		}
 	}
 
@@ -223,7 +224,7 @@ void make_child(unsigned char c[81], unsigned char p1[81], unsigned char p2[81])
 		else
 			c[i] = p2[i];
 
-		if (!mut && (fixed_boxes[i] == 10))
+		if (!mut && (fixed_boxes[i] == 9))
 			c[i] = rand() % 9;
 	}
 }

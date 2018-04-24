@@ -29,6 +29,17 @@ unsigned char fixed_boxes[81] =
  2, 8, 3, 4, 10, 9, 6, 10, 10,
  4, 7, 10, 1, 5, 3, 10, 10, 10};
 
+unsigned char solution[81] =
+{1, 5, 8, 6, 9, 2, 7, 3, 4,
+7, 3, 9, 5, 4, 8, 1, 2, 6,
+6, 4, 2, 3, 1, 7, 9, 5, 8,
+3, 1, 4, 9, 6, 5, 2, 8, 7,
+8, 6, 5, 7, 2, 1, 3, 4, 9,
+9, 2, 7, 8, 3, 4, 5, 6, 1,
+5, 9, 1, 2, 8, 6, 4, 7, 3,
+2, 8, 3, 4, 7, 9, 6, 1, 5,
+4, 7, 6, 1, 5, 3, 8, 9, 2};
+
 int main() {
 	unsigned char parents[POPULATION][81]; // POPULATION number of sudoku boards
 	unsigned char children[POPULATION][81];
@@ -36,7 +47,7 @@ int main() {
 	int roulette_thresh[POPULATION + 1];
 	int roulette_total;
 	int not_done = 1;
-	int generations = 0;
+	long long int generations = 0;
 	int i, j; // loop counters
 
 	unsigned char best_attempt[81];
@@ -45,8 +56,13 @@ int main() {
 	srand(time(NULL)); // initialize random numbers
 
 	// make all numbers 1 less
-	for (i = 0; i < 81; i++)
+	for (i = 0; i < 81; i++) {
 		fixed_boxes[i]--;
+		solution[i]--;
+	}
+
+	printf("Fitness: %d\n", board_fitness(solution));
+	print_board(solution);
 
 	// fill initial population with random values
 	for (i = 0; i < 81; i++) {
@@ -58,7 +74,7 @@ int main() {
 		}
 	}
 
-	while(not_done) {
+	while(generations < 1000000) {
 		// determine fitness of all boards and create thresholds for the roulette
 		generations++;
 		roulette_thresh[0] = 0;
@@ -70,7 +86,7 @@ int main() {
 				for (j = 0; j < 81; j++) {
 					best_attempt[j] = parents[i][j];
 				}
-				printf("Generation: %d\n", generations);
+				printf("Generation: %lld\n", generations);
 				print_board(best_attempt);
 
 				best_fitness = board_fitness(parents[i]);
@@ -78,7 +94,7 @@ int main() {
 
 			if (board_fitness(parents[i]) == 243) {
 				not_done = 0;
-				printf("This puzzle has been solved in %d generations!\n", generations);
+				printf("This puzzle has been solved in %lld generations!\n", generations);
 				print_board(parents[i]);
 				printf("Fitness: %d\n", board_fitness(parents[i]));
 			}
